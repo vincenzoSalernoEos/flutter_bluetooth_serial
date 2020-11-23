@@ -1,5 +1,7 @@
 include ':app'
 
+rootProject.name = 'FlutterBluetoothSerialAndroid Example'
+
 def flutterProjectRoot = rootProject.projectDir.parentFile.toPath()
 
 def plugins = new Properties()
