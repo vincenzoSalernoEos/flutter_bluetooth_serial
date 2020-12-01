@@ -37,7 +37,9 @@ public class FlutterBluetoothSerialPlugin implements FlutterPlugin, ActivityAwar
 	/// Registers plugin in Flutter plugin system
 	public static void registerWith(Registrar registrar) {
 		FlutterBluetoothSerialPlugin instance = new FlutterBluetoothSerialPlugin();
-		instance.genericStartup(registrar.messenger(), registrar.context());
+//		instance.genericStartup(registrar.messenger(), registrar.context());
+//		instance.genericStartup(registrar.messenger(), registrar.activeContext());
+		instance.genericStartup(registrar.messenger(), registrar.activity());
 
 		registrar.addRequestPermissionsResultListener(instance.callHandler);
 		registrar.addActivityResultListener(instance.callHandler);
@@ -75,6 +77,7 @@ public class FlutterBluetoothSerialPlugin implements FlutterPlugin, ActivityAwar
 		discoveryChannel	.setStreamHandler(null);
 
 		for (BluetoothConnectionWrapper btConnection : callHandler.connections.values()) {
+			btConnection.disconnect();
 			btConnection.readChannel.setStreamHandler(null);
 		}
 
@@ -179,6 +182,11 @@ public class FlutterBluetoothSerialPlugin implements FlutterPlugin, ActivityAwar
 	 */
 	@Override
 	public void onDetachedFromActivity() {
+		for (BluetoothConnectionWrapper btConnection : callHandler.connections.values()) {
+			btConnection.disconnect();
+			btConnection.readChannel.setStreamHandler(null);
+		}
+
 		callHandler.setActivity(null);
 	}
 

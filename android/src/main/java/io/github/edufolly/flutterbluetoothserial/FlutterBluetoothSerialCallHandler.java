@@ -971,14 +971,16 @@ public class FlutterBluetoothSerialCallHandler implements MethodChannel.MethodCa
 	EnsurePermissionsCallback pendingPermissionsEnsureCallbacks = null;
 
 	private void ensurePermissions(EnsurePermissionsCallback callbacks) {
-		if(activity != null) {
-			if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-				ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, Constants.REQUEST_COARSE_LOCATION_PERMISSIONS);
-
-				pendingPermissionsEnsureCallbacks = callbacks;
-			} else {
-				callbacks.onResult(true);
+		if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+			if(activity == null) {
+				Log.e(Constants.TAG, "Missing permission, cannot use without activity!");
+				callbacks.onResult(false);
 			}
+			ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, Constants.REQUEST_COARSE_LOCATION_PERMISSIONS);
+
+			pendingPermissionsEnsureCallbacks = callbacks;
+		} else {
+			callbacks.onResult(true);
 		}
 	}
 
